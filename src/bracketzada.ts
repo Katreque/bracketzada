@@ -2,7 +2,7 @@ export class Player {
   public id: number;
   public name: string;
 
-  constructor(name: string, id: number) {
+  constructor(id: number, name: string) {
     this.id = id;
     this.name = name;
   }
@@ -10,19 +10,19 @@ export class Player {
 
 class Node {
   public id: number;
-  public idChilden: any;
+  public idChildren: any;
   public playerLeft: any;
   public playerRight: any;
 
-  constructor(id: number, idChilden?: Array<number>, playerLeft?: Player, playerRight?: Player) {
+  constructor(id: number, idChildren?: Array<number>, playerLeft?: Player, playerRight?: Player) {
     this.id = id;
-    this.idChilden = idChilden;
+    this.idChildren = idChildren;
     this.playerLeft = playerLeft;
     this.playerRight = playerRight;
   }
 
   public addParent(ids: Array<number>) {
-    this.idChilden = ids;
+    this.idChildren = ids;
   }
 
   public addPlayerLeft(player?: Player) {
@@ -37,8 +37,8 @@ class Node {
 class NodeWinner extends Node {
   public playerWinner: any;
 
-  constructor(id: number, idChilden?: Array<number>, winner?: Player) {
-    super(id, idChilden);
+  constructor(id: number, idChildren?: Array<number>, winner?: Player) {
+    super(id, idChildren);
     this.playerWinner = winner;
   }
 }
@@ -46,16 +46,12 @@ class NodeWinner extends Node {
 export class Tournament {
   public name: any;
   public players: Array<Player>;
-  public graph: Array<Node>;
+  private graph: Array<Node>;
 
   constructor(players: Array<Player>, name?: string) {
     this.name = name || 'Bracketzada Tournament';
     this.players = players;
     this.graph = [];
-  }
-
-  private _numberNodes(numberPlayers: number) : number {
-    return Math.pow(2, Math.ceil(Math.log2(numberPlayers)));
   }
 
   private _generateGraph(numNodes: number) : Array<Node> {
@@ -78,47 +74,61 @@ export class Tournament {
   }
 
   private _setPlayers(graph: Array<Node>, players: Array<Player>) : Array<Node> {
+    if (!players.length) {
+      throw new Error("Players array can't be empty.");
+    }
+
+    if (players.length === 1) {
+      throw new Error("Must have more then 1 player.");
+    }
+
     for (let i = graph.length - 1; i >= (graph.length - (graph.length/2)); i--) {
-      graph[i].addPlayerLeft(players.pop());
       graph[i].addPlayerRight(players.pop());
+      graph[i].addPlayerLeft(players.pop());
     }
 
     return graph;
   }
 
-  public generateBrackets(): Array<Node> {
-    return this._generateGraph(this._numberNodes(this.players.length));
+  public numberNodes() : number {
+    return Math.pow(2, Math.ceil(Math.log2(this.players.length)));
   }
 
-  public setWinnerMatch(idNode: number, idWinner: number) {
-    if (!this.graph[idNode]) {
-      throw "Node not found.";
+  public generateBrackets(): Array<Node> {
+    return this._generateGraph(this.numberNodes());
+  }
+
+  public setWinnerMatch(idMatch: number, idWinner: number) {
+    if (!this.graph[idMatch]) {
+      throw new Error("Match not found.");
     }
 
     let winner;
 
-    if (this.graph[idNode].playerLeft.id === idWinner) {
-      winner = this.graph[idNode].playerLeft;
+    if (this.graph[idMatch].playerLeft.id === idWinner) {
+      winner = this.graph[idMatch].playerLeft;
 
-    } else if (this.graph[idNode].playerRight.id === idWinner) {
-      winner = this.graph[idNode].playerRight;
+    } else if (this.graph[idMatch].playerRight.id === idWinner) {
+      winner = this.graph[idMatch].playerRight;
 
     } else {
-      throw "Winner's ID not found.";
+      throw new Error("Winner's ID not found.");
     }
 
-    if (Math.floor(idNode/2) === 0) {
+    if (Math.floor(idMatch/2) === 0) {
       this.graph[0] = new NodeWinner(0, winner);
     } else {
-      if (this.graph[idNode].id % 2 === 0) {
-        this.graph[Math.floor(idNode/2)].playerLeft = winner;
+      if (this.graph[idMatch].id % 2 === 0) {
+        this.graph[Math.floor(idMatch/2)].playerLeft = winner;
       } else {
-        this.graph[Math.floor(idNode/2)].playerRight = winner;
+        this.graph[Math.floor(idMatch/2)].playerRight = winner;
       }
     }
   }
 
-  public findMatch() {
-
+  public findMatch(idMatch: number) : Node | undefined {
+    return this.graph.find((el) => {
+      return (el.id === idMatch) ? true : false;
+    })
   }
 }
