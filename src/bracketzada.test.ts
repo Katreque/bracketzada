@@ -5,25 +5,18 @@ describe('Teste do teste', function() {
     it('Deve retornar um array com os nós conectados corretamente.', function() {
       let players = [
         new Player('a', 0),
-        new Player('a', 1),
-        new Player('a', 2),
-        new Player('a', 3),
-        new Player('a', 4),
-        new Player('a', 5),
-        new Player('a', 6),
-        new Player('a', 7),
-        new Player('a', 0),
-        new Player('a', 1),
-        new Player('a', 2),
-        new Player('a', 3),
-        new Player('a', 4),
-        new Player('a', 5),
-        new Player('a', 6),
-        new Player('a', 7),
+        new Player('b', 1),
+        new Player('c', 2),
+        new Player('d', 3),
+        new Player('e', 4),
+        new Player('f', 5),
+        new Player('g', 6),
+        new Player('h', 7)
       ]
 
       let champ = new Tournament(players);
-      let graph = champ.generateBrackets();
+      champ.generateBrackets();
+      //champ.setWinnerMatch(4, 6);
       //expect(graph[0].idParent).equals("Kappa");
     });
   });
