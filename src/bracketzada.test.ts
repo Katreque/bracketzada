@@ -229,6 +229,44 @@ describe('Tournament Class', function() {
       expect(function(){tournament.setWinnerMatch(2, 2);}).to.Throw("Winner's ID not found.");
     })
 
+    it('Should pass the winner to the next match and respect the left position.', function() {
+      let players = [
+        new Player(0, 'a'),
+        new Player(1, 'b'),
+        new Player(2, 'c'),
+        new Player(3, 'd')
+      ];
+      let tournament = new Tournament(players);
+      let brackets = tournament.generateBrackets();
+      tournament.setWinnerMatch(2, 1);
+
+      expect(brackets[0].id).equal(0);
+      expect(brackets[0].idChildren[0]).equal(1);
+      expect(brackets[0].playerLeft).equal(undefined);
+      expect(brackets[0].playerRight).equal(undefined);
+
+      expect(brackets[1].id).equal(1);
+      expect(brackets[1].idChildren[0]).equal(2);
+      expect(brackets[1].idChildren[1]).equal(3);
+      expect(brackets[1].playerLeft.id).equal(1);
+      expect(brackets[1].playerLeft.name).equal('b');
+      expect(brackets[0].playerRight).equal(undefined);
+
+      expect(brackets[2].id).equal(2);
+      expect(brackets[2].idChildren[0]).equal(undefined);
+      expect(brackets[2].playerLeft.id).equal(0);
+      expect(brackets[2].playerLeft.name).equal('a');
+      expect(brackets[2].playerRight.id).equal(1);
+      expect(brackets[2].playerRight.name).equal('b');
+
+      expect(brackets[3].id).equal(3);
+      expect(brackets[3].idChildren[0]).equal(undefined);
+      expect(brackets[3].playerLeft.id).equal(2);
+      expect(brackets[3].playerLeft.name).equal('c');
+      expect(brackets[3].playerRight.id).equal(3);
+      expect(brackets[3].playerRight.name).equal('d');
+    })
+
     it('Should pass the winner to the next match and respect the right position.', function() {
       let players = [
         new Player(0, 'a'),
@@ -237,16 +275,72 @@ describe('Tournament Class', function() {
         new Player(3, 'd')
       ];
       let tournament = new Tournament(players);
-      tournament.generateBrackets();
-      tournament.setWinnerMatch(2, 2);
+      let brackets = tournament.generateBrackets();
+      tournament.setWinnerMatch(3, 2);
 
-      // Continue from here.
+      expect(brackets[0].id).equal(0);
+      expect(brackets[0].idChildren[0]).equal(1);
+      expect(brackets[0].playerLeft).equal(undefined);
+      expect(brackets[0].playerRight).equal(undefined);
+
+      expect(brackets[1].id).equal(1);
+      expect(brackets[1].idChildren[0]).equal(2);
+      expect(brackets[1].idChildren[1]).equal(3);
+      expect(brackets[0].playerLeft).equal(undefined);
+      expect(brackets[1].playerRight.id).equal(2);
+      expect(brackets[1].playerRight.name).equal('c');
+
+      expect(brackets[2].id).equal(2);
+      expect(brackets[2].idChildren[0]).equal(undefined);
+      expect(brackets[2].playerLeft.id).equal(0);
+      expect(brackets[2].playerLeft.name).equal('a');
+      expect(brackets[2].playerRight.id).equal(1);
+      expect(brackets[2].playerRight.name).equal('b');
+
+      expect(brackets[3].id).equal(3);
+      expect(brackets[3].idChildren[0]).equal(undefined);
+      expect(brackets[3].playerLeft.id).equal(2);
+      expect(brackets[3].playerLeft.name).equal('c');
+      expect(brackets[3].playerRight.id).equal(3);
+      expect(brackets[3].playerRight.name).equal('d');
     })
   })
 
   describe('findMatch', function() {
-    it('', function() {
+    it('If match id doesnt exist, return undefined.', function() {
+      let players = [
+        new Player(0, 'a'),
+        new Player(1, 'b'),
+        new Player(2, 'c'),
+        new Player(3, 'd')
+      ];
+      let tournament = new Tournament(players);
+      tournament.generateBrackets();
 
+      expect(tournament.findMatch(4)).equal(undefined);
+    })
+
+    it('If match id exist, return match data.', function() {
+      let players = [
+        new Player(0, 'a'),
+        new Player(1, 'b'),
+        new Player(2, 'c'),
+        new Player(3, 'd')
+      ];
+      let tournament = new Tournament(players);
+      tournament.generateBrackets();
+      let match = tournament.findMatch(3);
+
+      if (!!match) {
+        expect(match.id).equal(3);
+        expect(match.idChildren[0]).equal(undefined);
+        expect(match.playerLeft.id).equal(2);
+        expect(match.playerLeft.name).equal('c');
+        expect(match.playerRight.id).equal(3);
+        expect(match.playerRight.name).equal('d');
+      } else {
+        expect(true).equal(false);
+      }
     })
   })
-});
+})
