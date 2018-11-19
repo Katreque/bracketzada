@@ -5,7 +5,7 @@ import uglify from 'gulp-uglify';
 import rename from 'gulp-rename';
 import del from 'del';
 
-gulp.task('build_commonjs', function (done) {
+gulp.task('build', function (done) {
   return gulp.src('./build/bracketzada.js')
         .pipe(babel({
           presets: [
@@ -16,7 +16,7 @@ gulp.task('build_commonjs', function (done) {
         .pipe(rename({
           suffix: '.min'
         }))
-        .pipe(gulp.dest('dist/commonjs'))
+        .pipe(gulp.dest('./dist'))
         .on('end', () => done())
 });
 
@@ -36,5 +36,5 @@ gulp.task('del', function () {
 gulp.task('build', gulp.series(
   'del',
   'unit_test',
-  'build_commonjs'
+  'build'
 ));

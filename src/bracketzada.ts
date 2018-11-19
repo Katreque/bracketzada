@@ -74,10 +74,6 @@ export class Tournament {
   }
 
   private _setPlayers(graph: Array<Node>, players: Array<Player>) : Array<Node> {
-    if (!players.length) {
-      throw new Error("Players array can't be empty.");
-    }
-
     if (players.length === 1) {
       throw new Error("Must have more then 1 player.");
     }
@@ -95,6 +91,10 @@ export class Tournament {
   }
 
   public generateBrackets(): Array<Node> {
+    if (!this.players || !this.players.length) {
+      throw new Error("Players array can't be empty.");
+    }
+
     return this._generateGraph(this.numberNodes());
   }
 
