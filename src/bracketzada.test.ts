@@ -41,12 +41,12 @@ describe('Tournament Class', function() {
     })
   })
 
-  describe('numberNodes', function() {
+  describe('numberMatches', function() {
     it('Should return 0 as there are no players on the tournament.', function() {
       let players: Player[] = [];
       let tournament = new Tournament(players);
 
-      expect(tournament.numberNodes()).equal(0);
+      expect(tournament.numberMatches()).equal(0);
     });
 
     it('Should return 1 as there is 1 player on the tournament.', function() {
@@ -55,7 +55,7 @@ describe('Tournament Class', function() {
       ];
       let tournament = new Tournament(players);
 
-      expect(tournament.numberNodes()).equal(1);
+      expect(tournament.numberMatches()).equal(1);
     });
 
     it('Should return 2 as there are 2 player on the tournament.', function() {
@@ -65,7 +65,7 @@ describe('Tournament Class', function() {
       ];
       let tournament = new Tournament(players);
 
-      expect(tournament.numberNodes()).equal(2);
+      expect(tournament.numberMatches()).equal(2);
     });
 
     it('Should return 4 as there are 3 player on the tournament.', function() {
@@ -76,7 +76,7 @@ describe('Tournament Class', function() {
       ];
       let tournament = new Tournament(players);
 
-      expect(tournament.numberNodes()).equal(4);
+      expect(tournament.numberMatches()).equal(4);
     });
 
     it('Should return 16 as there are 9 player on the tournament.', function() {
@@ -93,7 +93,7 @@ describe('Tournament Class', function() {
       ];
       let tournament = new Tournament(players);
 
-      expect(tournament.numberNodes()).equal(16);
+      expect(tournament.numberMatches()).equal(16);
     });
 
     it('Should return 32 as there are 31 player on the tournament.', function() {
@@ -103,7 +103,7 @@ describe('Tournament Class', function() {
       }
       let tournament = new Tournament(players);
 
-      expect(tournament.numberNodes()).equal(32);
+      expect(tournament.numberMatches()).equal(32);
     });
 
     it('Should return 128 as there are 115 player on the tournament.', function() {
@@ -113,7 +113,7 @@ describe('Tournament Class', function() {
       }
       let tournament = new Tournament(players);
 
-      expect(tournament.numberNodes()).equal(128);
+      expect(tournament.numberMatches()).equal(128);
     });
 
     it('Should return 1024 as there are 1000 player on the tournament.', function() {
@@ -123,7 +123,7 @@ describe('Tournament Class', function() {
       }
       let tournament = new Tournament(players);
 
-      expect(tournament.numberNodes()).equal(1024);
+      expect(tournament.numberMatches()).equal(1024);
     });
   });
 
@@ -227,6 +227,19 @@ describe('Tournament Class', function() {
       tournament.generateBrackets();
 
       expect(function(){tournament.setWinnerMatch(2, 2);}).to.Throw("Winner's ID not found.");
+    })
+
+    it('If player doesnt exist inside the match, must throw.', function() {
+      let players = [
+        new Player(0, 'a'),
+        new Player(1, 'b'),
+        new Player(2, 'c'),
+        new Player(3, 'd')
+      ];
+      let tournament = new Tournament(players);
+      tournament.generateBrackets();
+
+      expect(function(){tournament.setWinnerMatch(1, 3);}).to.Throw("Winner's ID not found.");
     })
 
     it('Should pass the winner to the next match and respect the left position.', function() {
