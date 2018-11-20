@@ -30,7 +30,7 @@ let players = [
         new Player(2, 'PogChamp'),
         new Player(3, '4Head')
       ];
-let championship = new Tournament();
+let championship = new Tournament(players);
 let brackets = championship.generateBrackets();
 
 /*
